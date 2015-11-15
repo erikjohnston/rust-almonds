@@ -82,22 +82,6 @@ impl Almond {
         &self.caveats[..]
     }
 
-    // pub fn caveat_map(&self) -> HashMap<&[u8], Option<&[u8]>> {
-    //     let mut map = HashMap::with_capacity(self.caveats.len());
-    //
-    //     for caveat in &self.caveats() {
-    //         let mut it = caveat.splitn(2, |c| *c == b' ');
-    //
-    //         // By definition this must have at least one item
-    //         let key = it.next().unwrap();
-    //         let value = it.next();
-    //
-    //         map.insert(key, value);
-    //     }
-    //
-    //     map
-    // }
-
     pub fn hash(&self) -> &[u8; 32] {
         &self.hash
     }
@@ -216,11 +200,10 @@ impl <'a> Verifier<'a> {
 mod tests {
     use super::*;
     use test::Bencher;
+    use rustc_serialize::base64::{FromBase64, ToBase64, URL_SAFE};
 
     #[test]
     fn basic_test() {
-        use rustc_serialize::base64::{ToBase64, URL_SAFE};
-
         let key = b"this_is_a_secret";
 
         let mut almond = Almond::create(key, 1, b"login".to_vec());
@@ -281,6 +264,25 @@ mod tests {
             almond.add_caveat(b"testing".to_vec());
             almond.add_caveat(b"teeeeeeeeeeeest".to_vec());
             almond
+        });
+    }
+
+    #[bench]
+    fn parse(b: &mut Bencher) {
+        let key = b"this_is_a_secret";
+
+        let b64 = concat!(
+            "Rv31sT9t5d31LHPeBFjPewo0TJ1ARbDok7vOWBVNSM4BbG9naW4KdXN",
+            "lciBlcmlragpmb29vIGJhcgp0ZXN0aW5nCnRlZWVlZWVlZWVlZWVzdA",
+        );
+        let parsed = b64.from_base64().unwrap();
+
+        b.iter(|| {
+            let almond = Almond::parse_and_verify(
+                key,
+                &parsed[..],
+            );
+            almond.unwrap();
         });
     }
 }
