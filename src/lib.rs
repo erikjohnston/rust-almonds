@@ -32,7 +32,7 @@ impl Almond {
 
         add_to_hash(&mut almond.hash, key);
         add_to_hash(&mut almond.hash, &[generation]);
-        add_to_hash(&mut almond.hash, &almond.almond_type[..]);
+        add_to_hash(&mut almond.hash, &almond.almond_type);
 
         almond
     }
@@ -65,13 +65,13 @@ impl Almond {
     }
 
     pub fn add_caveat(&mut self, caveat: Vec<u8>) -> &mut Self {
-        add_to_hash(&mut self.hash, &caveat[..]);
+        add_to_hash(&mut self.hash, &caveat);
         self.caveats.push(caveat);
         self
     }
 
     pub fn almond_type(&self) -> &[u8] {
-        &self.almond_type[..]
+        &self.almond_type
     }
 
     pub fn generation(&self) -> u8 {
@@ -79,7 +79,7 @@ impl Almond {
     }
 
     pub fn caveats(&self) -> &[Vec<u8>] {
-        &self.caveats[..]
+        &self.caveats
     }
 
     pub fn hash(&self) -> &[u8; 32] {
@@ -95,7 +95,7 @@ impl Almond {
         result.push(b'\n');
 
         for caveat in &self.caveats {
-            result.push_all(&caveat[..]);
+            result.push_all(&caveat);
             result.push(b'\n');
         }
 
@@ -108,7 +108,7 @@ impl Almond {
 impl base64::ToBase64 for Almond {
     fn to_base64(&self, config: base64::Config) -> String {
         let serialized = self.serialize();
-        serialized[..].to_base64(config)
+        serialized.to_base64(config)
     }
 }
 
@@ -211,13 +211,20 @@ mod tests {
         let r = almond.to_base64(URL_SAFE);
         assert_eq!(
             r,
-            concat!(
-                "yyTNYc-CAXTVkgXkNnl8wdMzBTMgHyLRS",
-                "lXrjdf5Uw0BbG9naW4KdXNlciBlcmlrag",
-            )
+            "yyTNYc-CAXTVkgXkNnl8wdMzBTMgHyLRSlXrjdf5Uw0BbG9naW4KdXNlciBlcmlrag"
         );
 
-        Almond::parse_and_verify(key, &almond.serialize()[..]).unwrap();
+        Almond::parse_and_verify(key, &almond.serialize()).unwrap();
+    }
+
+    #[test]
+    fn parse_and_serialize() {
+        let key = b"this_is_a_secret";
+
+        let input = "yyTNYc-CAXTVkgXkNnl8wdMzBTMgHyLRSlXrjdf5Uw0BbG9naW4KdXNlciBlcmlrag";
+        let a = Almond::parse_and_verify(key, &input.from_base64().unwrap()).unwrap();
+
+        assert_eq!(a.to_base64(URL_SAFE), input);
     }
 
 
@@ -280,7 +287,7 @@ mod tests {
         b.iter(|| {
             let almond = Almond::parse_and_verify(
                 key,
-                &parsed[..],
+                &parsed,
             );
             almond.unwrap();
         });
