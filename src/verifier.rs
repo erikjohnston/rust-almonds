@@ -66,7 +66,7 @@ impl <'a> Verifier<'a> {
     /// `satisfies_exact` with `value` set to `None`*
     ///
     /// ```
-    /// # use almond::{Almond, Verifier};
+    /// # use almonds::{Almond, Verifier};
     /// let mut almond = Almond::create(b"secret", 1, b"access".to_vec());
     /// almond.add_caveat(b"user", Some(b"erikj"));
     ///
@@ -92,7 +92,7 @@ impl <'a> Verifier<'a> {
     ///
     /// ```
     /// # use std::str;
-    /// # use almond::{Almond, Verifier};
+    /// # use almonds::{Almond, Verifier};
     /// let mut almond = Almond::create(b"secret", 1, b"access".to_vec());
     /// almond.add_caveat(b"expires", Some(b"1500000000"));
     ///
@@ -130,7 +130,7 @@ impl <'a> Verifier<'a> {
     /// If they match then the caveat is accpeted, otherwise it is rejected.
     ///
     /// ```
-    /// # use almond::{Almond, Verifier};
+    /// # use almonds::{Almond, Verifier};
     /// let mut almond = Almond::create(b"secret", 1, b"access".to_vec());
     /// almond.add_caveat(b"user", Some(b"erikj"));
     ///

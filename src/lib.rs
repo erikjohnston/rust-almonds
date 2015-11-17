@@ -11,7 +11,7 @@
 //! Creating an Almond:
 //!
 //! ```
-//! use almond::Almond;
+//! use almonds::Almond;
 //!
 //! let secret_key = b"this_is_a_secret";
 //! let generation = 1;
@@ -28,7 +28,7 @@
 //! Validating an Almond:
 //!
 //! ```
-//! use almond::*;
+//! use almonds::*;
 //!
 //! let secret_key = b"this_is_a_secret";
 //! let expected_generation = 1;
