@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Verifier","The verifier takes an almond and checks if it satisfies a list of predicates."]]});

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Verifier` struct in crate `almonds`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Verifier">
+
+    <title>almonds::Verifier - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>almonds</a></p><script>window.sidebarCurrent = {name: 'Verifier', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>almonds</a>::<wbr><a class='struct' href=''>Verifier</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-113' class='srclink' href='../src/almonds/verifier.rs.html#22-25' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Verifier&lt;'a&gt; {
+    // some fields omitted
+}</pre><div class='docblock'><p>The verifier takes an almond and checks if it satisfies a list of
+predicates.</p>
+
+<p>An almond will be accepted if:</p>
+
+<ul>
+<li>All caveats match and pass at least one predicate.</li>
+<li>No caveats are rejected by any predicate.</li>
+</ul>
+
+<p>In particular, an almond will be rejected if it has any &quot;unrecognized&quot;
+caveats, i.e. ones that do not match any predicates. On the other hand,
+not all predicates must have matched a caveat.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;'a&gt; <a class='struct' href='../almonds/struct.Verifier.html' title='almonds::Verifier'>Verifier</a>&lt;'a&gt;</code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(almond: &amp;'a <a class='struct' href='../almonds/struct.Almond.html' title='almonds::Almond'>Almond</a>, generation: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>, almond_type: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='struct' href='../almonds/struct.Verifier.html' title='almonds::Verifier'>Verifier</a>&lt;'a&gt;</code></h4>
+<div class='docblock'><p>Create a new instance to verify the given caveat.</p>
+</div><h4 id='method.allow' class='method'><code>fn <a href='#method.allow' class='fnname'>allow</a>(&amp;mut self, key: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; &amp;mut Self</code></h4>
+<div class='docblock'><p>Allow all caveats with the given key, irrespective of their values.</p>
+
+<p>This should generally only be used if the value will be pulled out of
+the almond for usage.</p>
+
+<p><em>Note: If you are expecting a key with no value then use
+<code>satisfies_exact</code> with <code>value</code> set to <code>None</code></em></p>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>almond</span> <span class='op'>=</span> <span class='ident'>Almond</span>::<span class='ident'>create</span>(<span class='string'>b&quot;secret&quot;</span>, <span class='number'>1</span>, <span class='string'>b&quot;access&quot;</span>.<span class='ident'>to_vec</span>());
+<span class='ident'>almond</span>.<span class='ident'>add_caveat</span>(<span class='string'>b&quot;user&quot;</span>, <span class='prelude-val'>Some</span>(<span class='string'>b&quot;erikj&quot;</span>));
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>Verifier</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>almond</span>, <span class='number'>1</span>, <span class='string'>b&quot;access&quot;</span>);
+<span class='ident'>v</span>.<span class='ident'>allow</span>(<span class='string'>b&quot;user&quot;</span>);
+<span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>verify</span>());</pre>
+</div><h4 id='method.satisfies' class='method'><code>fn <a href='#method.satisfies' class='fnname'>satisfies</a>&lt;F&gt;(&amp;mut self, key: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, predicate: F) -&gt; &amp;mut Self <span class='where'>where F: <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></span></code></h4>
+<div class='docblock'><p>Invokes <code>predicate</code> against the value of every caveat with the given
+key. If <code>predicate</code> returns <code>true</code> then the caveat is accepted,
+<code>false</code> rejects the caveat.</p>
+
+<p>Rejects the caveat if the key matches but has no value.</p>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>almond</span> <span class='op'>=</span> <span class='ident'>Almond</span>::<span class='ident'>create</span>(<span class='string'>b&quot;secret&quot;</span>, <span class='number'>1</span>, <span class='string'>b&quot;access&quot;</span>.<span class='ident'>to_vec</span>());
+<span class='ident'>almond</span>.<span class='ident'>add_caveat</span>(<span class='string'>b&quot;expires&quot;</span>, <span class='prelude-val'>Some</span>(<span class='string'>b&quot;1500000000&quot;</span>));
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>Verifier</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>almond</span>, <span class='number'>1</span>, <span class='string'>b&quot;access&quot;</span>);
+<span class='ident'>v</span>.<span class='ident'>satisfies</span>(
+   <span class='string'>b&quot;expires&quot;</span>,
+   <span class='op'>|</span><span class='ident'>val</span><span class='op'>|</span> {
+        <span class='ident'>str</span>::<span class='ident'>from_utf8</span>(<span class='ident'>val</span>).<span class='ident'>ok</span>().<span class='ident'>and_then</span>(
+            <span class='op'>|</span><span class='ident'>val</span><span class='op'>|</span> <span class='ident'>val</span>.<span class='ident'>parse</span>().<span class='ident'>ok</span>()
+        ).<span class='ident'>map</span>(
+            <span class='op'>|</span><span class='ident'>val</span><span class='op'>|</span> <span class='number'>1447720058</span> <span class='op'>&lt;</span> <span class='ident'>val</span>   <span class='comment'>// Where `1447720058` is &#39;now&#39;</span>
+        ).<span class='ident'>unwrap_or</span>(<span class='boolval'>false</span>)
+    }
+);
+<span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>verify</span>());</pre>
+</div><h4 id='method.satisfies_exact' class='method'><code>fn <a href='#method.satisfies_exact' class='fnname'>satisfies_exact</a>(&amp;mut self, key: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, value: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>&gt;)</code></h4>
+<div class='docblock'><p>Compares <code>value</code> with the value of every caveat with the given key.
+If they match then the caveat is accpeted, otherwise it is rejected.</p>
+<pre class='rust rust-example-rendered'>
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>almond</span> <span class='op'>=</span> <span class='ident'>Almond</span>::<span class='ident'>create</span>(<span class='string'>b&quot;secret&quot;</span>, <span class='number'>1</span>, <span class='string'>b&quot;access&quot;</span>.<span class='ident'>to_vec</span>());
+<span class='ident'>almond</span>.<span class='ident'>add_caveat</span>(<span class='string'>b&quot;user&quot;</span>, <span class='prelude-val'>Some</span>(<span class='string'>b&quot;erikj&quot;</span>));
+
+<span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span> <span class='op'>=</span> <span class='ident'>Verifier</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>almond</span>, <span class='number'>1</span>, <span class='string'>b&quot;access&quot;</span>);
+<span class='ident'>v</span>.<span class='ident'>satisfies_exact</span>(<span class='string'>b&quot;user&quot;</span>, <span class='prelude-val'>Some</span>(<span class='string'>b&quot;erikj&quot;</span>));
+<span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>v</span>.<span class='ident'>verify</span>());</pre>
+</div><h4 id='method.verify' class='method'><code>fn <a href='#method.verify' class='fnname'>verify</a>(&amp;self) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Returns whether the almond satisfies the given conditions and whether
+all caveats have been accepted by at least one condition.</p>
+
+<p>Always returns false if the almond does not have match specified
+<code>almond_type</code> and <code>generation</code>.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "almonds";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>
