@@ -57,9 +57,11 @@ impl Almond {
     /// Parse a binary serialized Almond, and validate that the hashes match.
     ///
     /// *Note: This expects a binary serialization rather than base64*
-    pub fn parse_and_validate(key: &[u8], input: &[u8]) -> Result<Almond, &'static str> {
+    pub fn parse_and_validate(key: &[u8], input: &[u8])
+        -> Result<Almond, AlmondParseError>
+    {
         if input.len() < 34 {
-            return Err("Too small");
+            return Err(AlmondParseError::InvalidAlmond);
         }
 
         let hash = &input[..32];
@@ -67,7 +69,10 @@ impl Almond {
 
         let mut split_it = input[33..].split(|c| *c == b'\n');
 
-        let almond_type = try!(split_it.next().ok_or("No initial newline"));
+        let almond_type = try!(
+            split_it.next()
+            .ok_or(AlmondParseError::InvalidAlmond)
+        );
 
         let mut almond = Almond::create(key, generation, almond_type.to_vec());
 
@@ -80,13 +85,19 @@ impl Almond {
         if MacResult::new(hash) == MacResult::new(almond.hash()) {
             Ok(almond)
         } else {
-            Err("Hash do not match")
+            Err(AlmondParseError::IncorrectHash)
         }
     }
 
     /// Parse a Base64 serialized Almond, and validate that the hashes match.
-    pub fn parse_base64_and_validate(key: &[u8], input: &[u8]) -> Result<Almond, &'static str> {
-        Almond::parse_and_validate(key, &input.from_base64().unwrap())
+    pub fn parse_base64_and_validate(key: &[u8], input: &[u8])
+        -> Result<Almond, AlmondParseError>
+    {
+        let parsed = try!(
+            input.from_base64()
+            .or(Err(AlmondParseError::InvalidAlmond))
+        );
+        Almond::parse_and_validate(key, &parsed)
     }
 
     /// Add a new literal caveat.
@@ -178,6 +189,19 @@ fn add_to_hash(hash: &mut [u8], data: &[u8]) {
     let mut mac = Hmac::new(hasher, hash);
     mac.input(data);
     mac.raw_result(hash);
+}
+
+
+quick_error! {
+    /// An error returned when we failed to parse a buffer as an almond.
+    #[derive(Debug)]
+    pub enum AlmondParseError {
+        /// The buffer did not contain a valid almond. 
+        InvalidAlmond {}
+
+        /// The hash did not match the deserialized Almond.
+        IncorrectHash {}
+    }
 }
 
 

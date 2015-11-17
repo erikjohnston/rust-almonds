@@ -6,3 +6,4 @@ authors = ["Erik Johnston"]
 [dependencies]
 rust-crypto = "0.2.34"
 rustc-serialize = "0.3.16"
+quick-error = "0.1.4"

@@ -4,7 +4,7 @@
 //! The primary use for Almond is to generate authorization tokens that can be
 //! verified without storing any state.
 //!
-//! (Almond currently does not support Macarrons' style third party caveats.)
+//! (Almond currently does not support Macaroons' style third party caveats.)
 //!
 //! # Examples
 //!
@@ -52,9 +52,10 @@
 extern crate crypto;
 extern crate rustc_serialize;
 extern crate test;
+#[macro_use] extern crate quick_error;
 
 mod almond;
 mod verifier;
 
-pub use almond::{Almond, ALMOND_HASH_SEED};
+pub use almond::{Almond, ALMOND_HASH_SEED, AlmondParseError};
 pub use verifier::Verifier;
