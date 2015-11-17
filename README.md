@@ -1,5 +1,7 @@
 # Almond
 
+[![Build Status](https://travis-ci.org/erikjohnston/rust-almonds.svg?branch=master)](https://travis-ci.org/erikjohnston/rust-almonds)
+
 [Documentation](http://erikjohnston.github.io/rust-almonds/)
 
 Almond is an implementation of the same concepts as Macaroons, but with
