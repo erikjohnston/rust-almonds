@@ -1,5 +1,7 @@
 # Almond
 
+[Documentation](http://erikjohnston.github.io/rust-almonds/)
+
 Almond is an implementation of the same concepts as Macaroons, but with
 much smaller binary serializations.
 
