@@ -1,3 +1,5 @@
+% Almond
+
 Almond is an implementation of the same concepts as Macaroons, but with
 much smaller binary serializations.
 
