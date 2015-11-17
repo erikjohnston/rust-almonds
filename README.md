@@ -1,4 +1,4 @@
-% Almond
+# Almond
 
 Almond is an implementation of the same concepts as Macaroons, but with
 much smaller binary serializations.
@@ -8,7 +8,7 @@ verified without storing any state.
 
 (Almond currently does not support Macaroons' style third party caveats.)
 
-# Examples
+## Examples
 
 Creating an Almond:
 
